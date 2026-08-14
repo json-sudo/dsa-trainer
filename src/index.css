@@ -79,7 +79,6 @@ body {
   box-sizing: border-box;
 }
 
-/* Visible custom focus ring everywhere (tokens.md: never remove outlines) */
 :focus-visible {
   outline: 2px solid var(--c-accent-practice);
   outline-offset: 2px;
