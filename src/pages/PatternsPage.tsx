@@ -12,13 +12,16 @@ export function PatternsPage() {
           <div className="kicker mb-2 text-[10px] tracking-[1.2px] text-faint">JUMP TO</div>
           <div className="flex flex-col gap-px">
             {patterns.map((p) => (
-              <a
+              <button
                 key={p.id}
-                href={`#p-${p.id}`}
-                className="rounded-[6px] px-2.5 py-[5px] text-[12.5px] font-medium text-ink-3 no-underline hover:bg-ink/6 hover:text-ink"
+                type="button"
+                onClick={() =>
+                  document.getElementById(`p-${p.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+                className="cursor-pointer rounded-[6px] border-none bg-transparent px-2.5 py-[5px] text-left text-[12.5px] font-medium text-ink-3 hover:bg-ink/6 hover:text-ink"
               >
                 {p.name}
-              </a>
+              </button>
             ))}
           </div>
         </nav>
