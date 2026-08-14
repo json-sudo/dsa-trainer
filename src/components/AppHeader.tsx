@@ -46,8 +46,9 @@ export function AppHeader({ subtitle }: { subtitle?: string }) {
           onClick={() => setTheme(settings.theme === 'dark' ? 'light' : 'dark')}
           className={`${navLinkClass} cursor-pointer border-none bg-transparent`}
           aria-label={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} theme`}
+          title={`Switch to ${settings.theme === 'dark' ? 'light' : 'dark'} theme`}
         >
-          {settings.theme === 'dark' ? '☀ Light' : `${<DarkThemeIcon />} Dark`}
+          {settings.theme === 'dark' ? '☀' : <DarkThemeIcon />}
         </button>
       </nav>
     </header>

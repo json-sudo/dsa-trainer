@@ -140,7 +140,7 @@ export function ProgressPage() {
                   reloadFromStorage()
                 }
               }}
-              className="h-8 cursor-pointer rounded-[7px] border border-err/40 bg-surface px-3.5 text-[12.5px] font-medium text-err hover:border-err hover:bg-err/6"
+              className="cursor-pointer rounded-[7px] border border-err/40 bg-surface px-3.5 text-[12.5px] font-medium text-err hover:border-err hover:bg-err/6"
             >
               Reset all data…
             </button>
