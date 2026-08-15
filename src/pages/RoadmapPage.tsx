@@ -7,12 +7,13 @@ import { problemsForTopic } from '../data'
 import { isUnlocked, lockTooltip } from '../lib/locks'
 import { averageScore, completedProblems } from '../lib/store'
 import { gradeBand } from '../lib/grading'
-import { useAppState } from '../state/appState'
+import { setFreeLearn, useAppState, useSettings } from '../state/appState'
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 13
 
 export function RoadmapPage() {
   const state = useAppState()
+  const settings = useSettings()
   const navigate = useNavigate()
   const [hovered, setHovered] = useState<string | null>(null)
 
@@ -26,7 +27,7 @@ export function RoadmapPage() {
       const authored = problems.filter((p) => p.authored)
       const completed = completedProblems(state, topic.problemIds).length
       const avg = averageScore(state, topic.problemIds)
-      const unlocked = isUnlocked(topic, completedByTopic)
+      const unlocked = settings.freeLearn || isUnlocked(topic, completedByTopic)
       return {
         topic,
         authoredCount: authored.length,
@@ -37,13 +38,31 @@ export function RoadmapPage() {
         pct: authored.length > 0 ? completed / authored.length : 0,
       }
     })
-  }, [state])
+  }, [state, settings.freeLearn])
 
   const nodeById = Object.fromEntries(derived.map((d) => [d.topic.id, d]))
 
   return (
     <div className="min-h-screen min-w-[1440px] bg-bg">
       <AppHeader />
+      <div className="mx-auto flex max-w-[1440px] items-center gap-5 px-7 py-3 text-xs text-muted">
+        <span className="inline-flex items-center gap-[7px]">
+          <span className="size-2.5 rounded-[3px] border border-ink/30 bg-surface" />
+          Unlocked
+        </span>
+        <span className="inline-flex items-center gap-[7px]">
+          <span className="size-2.5 rounded-[3px] border border-dashed border-ink/30 bg-sunken" />
+          Locked — hover for requirement
+        </span>
+        <span className="ml-auto font-mono">unlock rule: ≥2 completed problems in every prerequisite</span>
+        <button
+          type="button"
+          onClick={() => setFreeLearn(!settings.freeLearn)}
+          className="ghost-btn h-8 text-[12px]"
+        >
+          {settings.freeLearn ? 'Restore roadmap locks' : 'Unlock all and learn freely'}
+        </button>
+      </div>
       <div className="relative mx-auto" style={{ width: CANVAS.width, height: CANVAS.height }}>
         <svg
           width={CANVAS.width}
@@ -158,17 +177,6 @@ export function RoadmapPage() {
             )}
           </div>
         ))}
-      </div>
-      <div className="mx-auto flex max-w-[1440px] items-center gap-5 px-7 pb-10 text-xs text-muted">
-        <span className="inline-flex items-center gap-[7px]">
-          <span className="size-2.5 rounded-[3px] border border-ink/30 bg-surface" />
-          Unlocked
-        </span>
-        <span className="inline-flex items-center gap-[7px]">
-          <span className="size-2.5 rounded-[3px] border border-dashed border-ink/30 bg-sunken" />
-          Locked — hover for requirement
-        </span>
-        <span className="ml-auto font-mono">unlock rule: ≥2 completed problems in every prerequisite</span>
       </div>
     </div>
   )

@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { WizardPage } from '../pages/WizardPage'
-import { reloadFromStorage } from '../state/appState'
-import { newAttempt, saveState, type Attempt } from '../lib/store'
+import { getAppState, reloadFromStorage, setFreeLearn } from '../state/appState'
+import { draftFor, newAttempt, saveState, type Attempt } from '../lib/store'
 
 vi.mock('@monaco-editor/react', () => ({
   default: () => <div data-testid="editor-mock" />,
@@ -14,6 +14,7 @@ function renderWizard(problemId: string) {
   return render(
     <MemoryRouter initialEntries={[`/problem/${problemId}`]}>
       <Routes>
+        <Route path="/" element={<div>roadmap</div>} />
         <Route path="/problem/:problemId" element={<WizardPage />} />
         <Route path="/topic/:topicId" element={<div>topic page</div>} />
         <Route path="/patterns" element={<div>patterns page</div>} />
@@ -156,5 +157,43 @@ describe('pattern picker auto-grading (step 6)', () => {
     await pickAndReveal('binary-search')
     expect(screen.getByText('✕ not the pattern')).toBeInTheDocument()
     expect(screen.getByText(/expected Freq Map or Heap/)).toBeInTheDocument()
+  })
+})
+
+describe('locks, back, and short visits', () => {
+  it('sends locked-topic URLs back to the roadmap', () => {
+    renderWizard('valid-palindrome')
+    expect(screen.getByText('roadmap')).toBeInTheDocument()
+  })
+
+  it('opens a locked-topic problem after unlock-all', () => {
+    setFreeLearn(true)
+    renderWizard('valid-palindrome')
+    expect(screen.getByText('STEP 1 OF 10')).toBeInTheDocument()
+  })
+
+  it('goes back from the code step to step 8', async () => {
+    const user = userEvent.setup()
+    const attempt = newAttempt('two-sum', 'practice')
+    seedDraft({
+      ...attempt,
+      currentStep: 9,
+      totalSec: 200,
+      answers: { 2: 'a', 3: 'b', 4: 'c', 5: 'd', 6: 'e', 7: 'plan', 8: 'script' },
+      revealed: [2, 3, 4, 5, 6, 7, 8],
+      patternPick: { pattern: 'hash-map', verdict: 'correct' },
+      stepScores: [2, 3, 4, 5, 6, 7, 8].map((step) => ({ step, score: 2 as const, elapsedSec: 10 })),
+    })
+    renderWizard('two-sum')
+    expect(screen.getByTestId('editor-mock')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '← Back' }))
+    expect(screen.getByText('STEP 8 OF 10')).toBeInTheDocument()
+  })
+
+  it('does not keep a resume draft if the visit is under 3 minutes', () => {
+    const { unmount } = renderWizard('two-sum')
+    expect(screen.getByText('STEP 1 OF 10')).toBeInTheDocument()
+    unmount()
+    expect(draftFor(getAppState(), 'two-sum')).toBeUndefined()
   })
 })

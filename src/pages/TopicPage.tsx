@@ -4,8 +4,9 @@ import { AppHeader } from '../components/AppHeader'
 import { topicById, topics } from '../data/roadmap'
 import { problemsForTopic } from '../data'
 import { averageScore, completedProblems } from '../lib/store'
+import { canAccessTopic } from '../lib/locks'
 import { gradeBand } from '../lib/grading'
-import { useAppState } from '../state/appState'
+import { useAppState, useSettings } from '../state/appState'
 import { ProblemRow } from './ProblemRow'
 
 export function gradeTextColor(grade: string): string {
@@ -17,6 +18,7 @@ export function gradeTextColor(grade: string): string {
 export function TopicPage() {
   const { topicId } = useParams()
   const state = useAppState()
+  const settings = useSettings()
   const [primerOpen, setPrimerOpen] = useState(true)
   const topic = topicId ? topicById[topicId] : undefined
 
@@ -31,6 +33,7 @@ export function TopicPage() {
   }, [state, topic])
 
   if (!topic || !derived) return <Navigate to="/" replace />
+  if (!canAccessTopic(topic, state, settings.freeLearn)) return <Navigate to="/" replace />
   const { problems, authored, completed, avg, unlocks } = derived
   const pct = authored.length > 0 ? completed / authored.length : 0
   const circumference = 2 * Math.PI * 17

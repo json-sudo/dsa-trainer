@@ -12,6 +12,8 @@ import {
   importJSON,
   resetAll,
   STORAGE_KEY,
+  DRAFT_KEEP_SEC,
+  shouldPersistAttempt,
   type Attempt,
 } from './store'
 
@@ -94,5 +96,14 @@ describe('derived queries', () => {
     expect(averageScore(loadState())).toBe(80)
     expect(averageScore(loadState(), ['a'])).toBe(90)
     expect(averageScore(loadState(), ['zzz'])).toBeUndefined()
+  })
+})
+
+describe('short drafts', () => {
+  it('does not persist unfinished visits under 3 minutes', () => {
+    const draft = { ...newAttempt('two-sum', 'practice'), totalSec: DRAFT_KEEP_SEC - 1 }
+    expect(shouldPersistAttempt(draft)).toBe(false)
+    expect(shouldPersistAttempt({ ...draft, totalSec: DRAFT_KEEP_SEC })).toBe(true)
+    expect(shouldPersistAttempt(finished('two-sum', 'B', 70))).toBe(true)
   })
 })

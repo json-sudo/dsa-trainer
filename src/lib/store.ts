@@ -49,6 +49,14 @@ export interface AppState {
 
 export interface Settings {
   theme: 'light' | 'dark'
+  freeLearn: boolean
+}
+
+/** Unfinished visits shorter than this are not kept as drafts. */
+export const DRAFT_KEEP_SEC = 3 * 60
+
+export function shouldPersistAttempt(attempt: Attempt): boolean {
+  return !!attempt.finishedAt || attempt.totalSec >= DRAFT_KEEP_SEC
 }
 
 const emptyState: AppState = { version: 1, attempts: [] }
@@ -73,9 +81,12 @@ export function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY)
     const parsed = raw ? JSON.parse(raw) : null
-    return { theme: parsed?.theme === 'dark' ? 'dark' : 'light' }
+    return {
+      theme: parsed?.theme === 'dark' ? 'dark' : 'light',
+      freeLearn: parsed?.freeLearn === true,
+    }
   } catch {
-    return { theme: 'light' }
+    return { theme: 'light', freeLearn: false }
   }
 }
 
@@ -87,7 +98,6 @@ export function exportJSON(): string {
   return JSON.stringify(loadState(), null, 2)
 }
 
-/** Validate and replace stored progress. Throws on malformed input. */
 export function importJSON(raw: string): AppState {
   const parsed = JSON.parse(raw)
   if (parsed?.version !== 1 || !Array.isArray(parsed.attempts)) {

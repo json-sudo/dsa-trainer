@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 import { problemById } from '../data'
+import { topicById } from '../data/roadmap'
 import type { Problem } from '../data/types'
-import { draftFor, newAttempt, type Attempt } from '../lib/store'
-import { getAppState, upsertAttempt } from '../state/appState'
+import { canAccessTopic } from '../lib/locks'
+import { draftFor, newAttempt, shouldPersistAttempt, type Attempt } from '../lib/store'
+import { getAppState, removeAttempt, upsertAttempt, useAppState, useSettings } from '../state/appState'
 import { StatementAside } from '../wizard/StatementAside'
 import { StepRail } from '../wizard/StepRail'
 import { StepBody } from '../wizard/StepBody'
@@ -13,8 +15,12 @@ import { WizardHeader } from '../wizard/WizardHeader'
 
 export function WizardPage() {
   const { problemId } = useParams()
+  const settings = useSettings()
+  const state = useAppState()
   const problem = problemId ? problemById[problemId] : undefined
   if (!problem || !problem.authored) return <Navigate to="/" replace />
+  const topic = topicById[problem.topicId]
+  if (topic && !canAccessTopic(topic, state, settings.freeLearn)) return <Navigate to="/" replace />
   return <Wizard problem={problem} />
 }
 
@@ -23,7 +29,7 @@ function Wizard({ problem }: { problem: Problem }) {
     const draft = draftFor(getAppState(), problem.id)
     return draft ?? newAttempt(problem.id, problem.mode)
   })
-  
+
   const [viewStep, setViewStep] = useState(attempt.currentStep)
   const attemptRef = useRef(attempt)
   attemptRef.current = attempt
@@ -33,8 +39,15 @@ function Wizard({ problem }: { problem: Problem }) {
   }, [])
 
   useEffect(() => {
-    upsertAttempt(attempt)
+    if (shouldPersistAttempt(attempt)) upsertAttempt(attempt)
   }, [attempt])
+
+  useEffect(() => {
+    return () => {
+      const a = attemptRef.current
+      if (!shouldPersistAttempt(a)) removeAttempt(a.id)
+    }
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,7 +78,6 @@ function Wizard({ problem }: { problem: Problem }) {
   const restart = useCallback(() => {
     const fresh = newAttempt(problem.id, problem.mode)
     setAttempt(fresh)
-    upsertAttempt(fresh)
     setViewStep(1)
   }, [problem.id, problem.mode])
 
@@ -75,7 +87,13 @@ function Wizard({ problem }: { problem: Problem }) {
     return (
       <div className="mx-auto flex h-screen w-full min-w-[1200px] flex-col bg-bg">
         {header}
-        <CodeStep problem={problem} attempt={attempt} update={update} onSubmit={() => goToStep(10)} />
+        <CodeStep
+          problem={problem}
+          attempt={attempt}
+          update={update}
+          onSubmit={() => goToStep(10)}
+          onBack={() => setViewStep(8)}
+        />
       </div>
     )
   }

@@ -12,11 +12,13 @@ export function CodeStep({
   attempt,
   update,
   onSubmit,
+  onBack,
 }: {
   problem: Problem
   attempt: Attempt
   update: (patch: Partial<Attempt> | ((a: Attempt) => Attempt)) => void
   onSubmit: () => void
+  onBack: () => void
 }) {
   const settings = useSettings()
   const isGuided = problem.mode === 'guided'
@@ -236,11 +238,14 @@ export function CodeStep({
               ) : (
                 <span className="text-[12.5px] text-faint">No runs yet this attempt — results appear here.</span>
               )}
+              <button type="button" onClick={onBack} className="ghost-btn ml-auto h-[34px] text-[13px]">
+                ← Back
+              </button>
               <button
                 type="button"
                 onClick={onSubmit}
                 disabled={!ran}
-                className="ghost-btn ml-auto h-[34px] text-[13px]"
+                className="ghost-btn h-[34px] text-[13px]"
                 style={{ opacity: ran ? 1 : 0.5, cursor: ran ? 'pointer' : 'not-allowed' }}
                 title={ran ? undefined : 'Run the tests at least once first'}
               >

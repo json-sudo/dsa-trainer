@@ -49,8 +49,8 @@ describe('grade screen', () => {
     renderWizard('two-sum')
 
     expect(screen.getByText('PER-STEP SCORES')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '← Back' })).not.toBeInTheDocument()
     expect(screen.getByText('WEAKEST STEP')).toBeInTheDocument()
-    // 6 × 1/2 self-scores + full pattern + half tests → stored on the attempt.
     const finished = getAppState().attempts.find((a) => a.finishedAt)
     expect(finished).toBeDefined()
     expect(finished!.totalScore).toBeGreaterThan(0)
@@ -68,7 +68,7 @@ describe('grade screen', () => {
 
     const attempts = getAppState().attempts
     expect(attempts.filter((a) => a.problemId === 'two-sum' && a.finishedAt)).toHaveLength(1)
-    expect(attempts.filter((a) => a.problemId === 'two-sum' && !a.finishedAt)).toHaveLength(1)
+    expect(attempts.filter((a) => a.problemId === 'two-sum' && !a.finishedAt)).toHaveLength(0)
   })
 
   it('declining the retry reveals the full model walkthrough with the reference solution', async () => {
@@ -80,11 +80,10 @@ describe('grade screen', () => {
     expect(screen.queryByText('Full review')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Show me the model answer' }))
     expect(screen.getByText('Full review')).toBeInTheDocument()
-    // Every scored step's card is present…
     for (const step of [2, 3, 4, 5, 6, 7, 8]) {
       expect(screen.getByText(`STEP ${step}`)).toBeInTheDocument()
     }
-    // …plus the reference solution.
+
     expect(screen.getByText(/REFERENCE SOLUTION/)).toBeInTheDocument()
     expect(screen.getByText(/const seen = new Map/)).toBeInTheDocument()
   })

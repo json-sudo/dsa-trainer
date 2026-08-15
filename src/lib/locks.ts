@@ -1,5 +1,6 @@
-import { COMPLETED_PER_PREREQ, topicById } from '../data/roadmap'
+import { COMPLETED_PER_PREREQ, topicById, topics } from '../data/roadmap'
 import type { Topic } from '../data/types'
+import { completedProblems, type AppState } from './store'
 
 /**
  * Locking rule: a topic is locked until EVERY prerequisite topic has at least
@@ -12,7 +13,19 @@ export function isUnlocked(topic: Topic, completedByTopic: Record<string, number
   return topic.prerequisites.every((p) => (completedByTopic[p] ?? 0) >= COMPLETED_PER_PREREQ)
 }
 
-/** Names of prerequisite topics still missing completions, for the lock tooltip. */
+export function completedByTopic(state: AppState): Record<string, number> {
+  const counts: Record<string, number> = {}
+  for (const topic of topics) {
+    counts[topic.id] = completedProblems(state, topic.problemIds).length
+  }
+  return counts
+}
+
+/** Route access: free-learn mode opens every topic; otherwise the DAG lock applies. */
+export function canAccessTopic(topic: Topic, state: AppState, freeLearn: boolean): boolean {
+  return freeLearn || isUnlocked(topic, completedByTopic(state))
+}
+
 export function missingPrereqs(topic: Topic, completedByTopic: Record<string, number>): string[] {
   return topic.prerequisites
     .filter((p) => (completedByTopic[p] ?? 0) < COMPLETED_PER_PREREQ)

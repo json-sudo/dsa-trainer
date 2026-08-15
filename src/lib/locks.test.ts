@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isUnlocked, lockTooltip, missingPrereqs } from './locks'
+import { isUnlocked, lockTooltip, missingPrereqs, canAccessTopic } from './locks'
 import { topicById, topics } from '../data/roadmap'
 
 describe('lock logic', () => {
@@ -43,5 +43,12 @@ describe('lock logic', () => {
     for (const t of topics) {
       if (t.id !== 'arrays-hashing') expect(isUnlocked(t, {}), t.id).toBe(false)
     }
+  })
+
+  it('free-learn mode opens every topic regardless of prerequisites', () => {
+    const empty = { version: 1 as const, attempts: [] }
+    expect(canAccessTopic(topicById['two-pointers'], empty, false)).toBe(false)
+    expect(canAccessTopic(topicById['two-pointers'], empty, true)).toBe(true)
+    expect(canAccessTopic(topicById['arrays-hashing'], empty, false)).toBe(true)
   })
 })

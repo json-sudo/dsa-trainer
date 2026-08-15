@@ -47,11 +47,16 @@ export function setTheme(theme: 'light' | 'dark') {
   emit()
 }
 
+export function setFreeLearn(freeLearn: boolean) {
+  settings = { ...settings, freeLearn }
+  saveSettings(settings)
+  emit()
+}
+
 export function applyThemeClass() {
   document.documentElement.classList.toggle('dark', settings.theme === 'dark')
 }
 
-/** Insert or update an attempt (drafts included), then persist. */
 export function upsertAttempt(attempt: Attempt) {
   const idx = state.attempts.findIndex((a) => a.id === attempt.id)
   const attempts = [...state.attempts]
@@ -68,7 +73,6 @@ export function removeAttempt(id: string) {
   emit()
 }
 
-/** Replace the whole state (import / reset). */
 export function replaceState(next: AppState) {
   state = next
   saveState(state)
