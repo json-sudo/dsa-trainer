@@ -55,6 +55,8 @@ export interface Settings {
 /** Unfinished visits shorter than this are not kept as drafts. */
 export const DRAFT_KEEP_SEC = 3 * 60
 
+export const PERSIST_INTERVAL_MS = 20_000
+
 export function shouldPersistAttempt(attempt: Attempt): boolean {
   return !!attempt.finishedAt || attempt.totalSec >= DRAFT_KEEP_SEC
 }
@@ -131,8 +133,6 @@ export function newAttempt(problemId: string, mode: Mode): Attempt {
   }
 }
 
-/* ---------- Derived queries (never stored) ---------- */
-
 export function finishedAttempts(state: AppState): Attempt[] {
   return state.attempts.filter((a) => a.finishedAt)
 }
@@ -153,7 +153,6 @@ export function bestGrade(state: AppState, problemId: string): Grade | undefined
   return order.find((g) => grades.includes(g))
 }
 
-/** Distinct problems in this topic with at least one finished attempt. */
 export function completedProblems(state: AppState, problemIds: string[]): string[] {
   const finished = new Set(finishedAttempts(state).map((a) => a.problemId))
   return problemIds.filter((id) => finished.has(id))
@@ -167,7 +166,6 @@ export function averageScore(state: AppState, problemIds?: string[]): number | u
   return Math.round(scored.reduce((sum, a) => sum + (a.totalScore ?? 0), 0) / scored.length)
 }
 
-/** Average self-score (0–2) per wizard step across all scored attempts. */
 export function weakestSteps(state: AppState): { step: number; avg: number; count: number }[] {
   const byStep = new Map<number, { sum: number; count: number }>()
   for (const attempt of finishedAttempts(state)) {

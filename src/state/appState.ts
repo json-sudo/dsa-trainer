@@ -4,6 +4,7 @@ import {
   saveState,
   loadSettings,
   saveSettings,
+  shouldPersistAttempt,
   type AppState,
   type Attempt,
   type Settings,
@@ -71,6 +72,11 @@ export function removeAttempt(id: string) {
   state = { ...state, attempts: state.attempts.filter((a) => a.id !== id) }
   saveState(state)
   emit()
+}
+
+export function flushAttempt(attempt: Attempt) {
+  if (shouldPersistAttempt(attempt)) upsertAttempt(attempt)
+  else if (state.attempts.some((a) => a.id === attempt.id)) removeAttempt(attempt.id)
 }
 
 export function replaceState(next: AppState) {

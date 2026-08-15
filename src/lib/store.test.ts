@@ -13,6 +13,7 @@ import {
   resetAll,
   STORAGE_KEY,
   DRAFT_KEEP_SEC,
+  PERSIST_INTERVAL_MS,
   shouldPersistAttempt,
   type Attempt,
 } from './store'
@@ -105,5 +106,10 @@ describe('short drafts', () => {
     expect(shouldPersistAttempt(draft)).toBe(false)
     expect(shouldPersistAttempt({ ...draft, totalSec: DRAFT_KEEP_SEC })).toBe(true)
     expect(shouldPersistAttempt(finished('two-sum', 'B', 70))).toBe(true)
+  })
+
+  it('flushes persistable attempts on a 15–30s cadence, not every second', () => {
+    expect(PERSIST_INTERVAL_MS).toBeGreaterThanOrEqual(15_000)
+    expect(PERSIST_INTERVAL_MS).toBeLessThanOrEqual(30_000)
   })
 })

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { WizardPage } from '../pages/WizardPage'
-import { getAppState, reloadFromStorage, setFreeLearn } from '../state/appState'
+import { getAppState, reloadFromStorage, setFreeLearn, flushAttempt } from '../state/appState'
 import { draftFor, newAttempt, saveState, type Attempt } from '../lib/store'
 
 vi.mock('@monaco-editor/react', () => ({
@@ -195,5 +195,25 @@ describe('locks, back, and short visits', () => {
     expect(screen.getByText('STEP 1 OF 10')).toBeInTheDocument()
     unmount()
     expect(draftFor(getAppState(), 'two-sum')).toBeUndefined()
+  })
+
+  it('flushAttempt skips short drafts and writes persistable ones', () => {
+    flushAttempt({ ...newAttempt('two-sum', 'practice'), totalSec: 10 })
+    expect(getAppState().attempts).toHaveLength(0)
+    flushAttempt({ ...newAttempt('two-sum', 'practice'), currentStep: 2, totalSec: 180 })
+    expect(draftFor(getAppState(), 'two-sum')?.totalSec).toBe(180)
+  })
+
+  it('flushes a persistable draft when the tab is hidden', () => {
+    const attempt = newAttempt('two-sum', 'practice')
+    seedDraft({ ...attempt, currentStep: 2, totalSec: 180 })
+    renderWizard('two-sum')
+    const spy = vi.spyOn(Storage.prototype, 'setItem')
+    spy.mockClear()
+    Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'hidden' })
+    document.dispatchEvent(new Event('visibilitychange'))
+    expect(spy).toHaveBeenCalled()
+    spy.mockRestore()
+    Object.defineProperty(document, 'visibilityState', { configurable: true, value: 'visible' })
   })
 })

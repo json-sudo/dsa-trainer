@@ -4,8 +4,8 @@ import { problemById } from '../data'
 import { topicById } from '../data/roadmap'
 import type { Problem } from '../data/types'
 import { canAccessTopic } from '../lib/locks'
-import { draftFor, newAttempt, shouldPersistAttempt, type Attempt } from '../lib/store'
-import { getAppState, removeAttempt, upsertAttempt, useAppState, useSettings } from '../state/appState'
+import { draftFor, newAttempt, PERSIST_INTERVAL_MS, type Attempt } from '../lib/store'
+import { flushAttempt, getAppState, useAppState, useSettings } from '../state/appState'
 import { StatementAside } from '../wizard/StatementAside'
 import { StepRail } from '../wizard/StepRail'
 import { StepBody } from '../wizard/StepBody'
@@ -38,16 +38,28 @@ function Wizard({ problem }: { problem: Problem }) {
     setAttempt((prev) => (typeof patch === 'function' ? patch(prev) : { ...prev, ...patch }))
   }, [])
 
-  useEffect(() => {
-    if (shouldPersistAttempt(attempt)) upsertAttempt(attempt)
-  }, [attempt])
+  const flush = useCallback(() => {
+    flushAttempt(attemptRef.current)
+  }, [])
 
   useEffect(() => {
-    return () => {
-      const a = attemptRef.current
-      if (!shouldPersistAttempt(a)) removeAttempt(a.id)
+    if (attempt.finishedAt) flush()
+  }, [attempt.finishedAt, flush])
+
+  useEffect(() => {
+    const interval = setInterval(flush, PERSIST_INTERVAL_MS)
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') flush()
     }
-  }, [])
+    document.addEventListener('visibilitychange', onVisibility)
+    window.addEventListener('pagehide', flush)
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('pagehide', flush)
+      flush()
+    }
+  }, [flush])
 
   useEffect(() => {
     const interval = setInterval(() => {
