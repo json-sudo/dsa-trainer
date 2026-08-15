@@ -73,7 +73,9 @@ const __entryFn =
     ? ${opts.entry}
     : (module.exports && (module.exports.${opts.entry} || module.exports.default));
 const __resolveArg = (v) => {
-  if (v && typeof v === 'object' && '$list' in v) return buildList(v.$list);
+  if (v && typeof v === 'object' && '$list' in v) {
+    return typeof v.$pos === 'number' ? buildCycle(v.$list, v.$pos) : buildList(v.$list);
+  }
   if (v && typeof v === 'object' && '$tree' in v) return buildTree(v.$tree);
   return v;
 };

@@ -1,10 +1,3 @@
-/**
- * Test-runner harness: list/tree builders shared between the app, the Node
- * validate-data script, and the in-browser worker (which receives these
- * functions as source via `.toString()` — keep them self-contained: no
- * imports, no references to outer scope).
- */
-
 export interface ListNode {
   val: number
   next: ListNode | null
@@ -22,6 +15,17 @@ export function buildList(values: number[]): ListNode | null {
     head = { val: values[i], next: head }
   }
   return head
+}
+
+export function buildCycle(values: number[], pos: number): ListNode | null {
+  if (values.length === 0) return null
+  const nodes: ListNode[] = []
+  for (let i = 0; i < values.length; i++) {
+    nodes.push({ val: values[i], next: null })
+  }
+  for (let i = 0; i < nodes.length - 1; i++) nodes[i].next = nodes[i + 1]
+  if (pos >= 0 && pos < nodes.length) nodes[nodes.length - 1].next = nodes[pos]
+  return nodes[0]
 }
 
 export function listToArray(head: ListNode | null): number[] {
@@ -57,7 +61,6 @@ export function buildTree(values: (number | null)[]): TreeNode | null {
   return root
 }
 
-/** Level-order array with nulls, trailing nulls trimmed (LeetCode format). */
 export function treeToArray(root: TreeNode | null): (number | null)[] {
   const out: (number | null)[] = []
   const queue: (TreeNode | null)[] = [root]
@@ -74,7 +77,6 @@ export function treeToArray(root: TreeNode | null): (number | null)[] {
   return out
 }
 
-/** Binary min-heap keyed by a number; exposed to user code on heap problems. */
 export class MinHeap<T> {
   private items: { key: number; value: T }[] = []
 
@@ -123,15 +125,10 @@ export class MinHeap<T> {
   }
 }
 
-/**
- * Source of the harness prepended to transpiled user code in the worker and
- * in the Node validate-data runner.
- */
 export function harnessSource(): string {
-  // Explicit const bindings so injected code keeps these names even if the
-  // bundler renames the original identifiers during minification.
   return [
     `const buildList = ${buildList.toString()};`,
+    `const buildCycle = ${buildCycle.toString()};`,
     `const listToArray = ${listToArray.toString()};`,
     `const buildTree = ${buildTree.toString()};`,
     `const treeToArray = ${treeToArray.toString()};`,

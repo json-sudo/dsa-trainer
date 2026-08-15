@@ -9,17 +9,17 @@ export const linkedListCycle: Problem = {
   topicId: 'linked-list',
   authored: true,
   statement:
-    'Given the head of a linked list, determine whether it contains a cycle — some node\'s `next` pointer loops back to a node already visited. The real LeetCode signature takes just `head`; LeetCode\'s own judge (and this trainer, matching it) instead describes the list as `values` plus an integer `pos`, the index the tail\'s `next` connects back to (`-1` means no cycle), since a literal cyclic list can\'t be printed or passed around as ordinary test data. Return `true` if a cycle exists, `false` otherwise.',
+    'Given the `head` of a singly linked list, return `true` if the list contains a cycle — some node\'s `next` pointer loops back to a node already on the path from `head` — and `false` otherwise. (LeetCode\'s examples describe the list as `values` plus an integer `pos`, the index the tail connects back to, with `-1` meaning no cycle. The harness builds that list for you; your function receives a real `ListNode` chain and must not assume `values`/`pos`.)',
   examples: [
-    { input: 'values = [3,2,0,-4], pos = 1', output: 'true', explanation: 'Tail (-4) connects back to index 1 (value 2)' },
-    { input: 'values = [1,2], pos = 0', output: 'true', explanation: 'Tail (2) connects back to index 0 (value 1)' },
-    { input: 'values = [1], pos = -1', output: 'false', explanation: 'No cycle — tail\'s next is null' },
+    { input: 'head = [3,2,0,-4], pos = 1', output: 'true', explanation: 'Tail (-4) connects back to index 1 (value 2)' },
+    { input: 'head = [1,2], pos = 0', output: 'true', explanation: 'Tail (2) connects back to index 0 (value 1)' },
+    { input: 'head = [1], pos = -1', output: 'false', explanation: 'No cycle — tail\'s next is null' },
   ],
   constraints: ['0 <= values.length <= 10^4', '-10^5 <= values[i] <= 10^5', '-1 <= pos < values.length'],
   steps: {
     inputsOutputs: {
       modelAnswer:
-        'Input: a list description (values + where the tail loops back to, or -1 for no loop). Output: a boolean — does traversal from head ever revisit a node. No node values or positions matter, only reachability of a repeat.',
+        'Input: the head of a singly linked list (possibly null, possibly cyclic). Output: a boolean — does traversal from head ever revisit a node. Node values and the example `pos` index do not matter; only pointer identity does.',
       rubric: ['States output is a pure existence boolean', 'Notes node values themselves are irrelevant to the answer'],
       teachingNote: 'Note explicitly that values can repeat legitimately (e.g. two different nodes holding the same number) — cycle detection must be about node identity, not value equality.',
     },
@@ -78,18 +78,19 @@ export const linkedListCycle: Problem = {
     },
   ],
   code: {
-    signature: 'export function hasCycle(values: number[], pos: number): boolean {\n\n}\n',
-    harness: 'plain',
+    signature:
+      'interface ListNode { val: number; next: ListNode | null }\n\nexport function hasCycle(head: ListNode | null): boolean {\n  // your code here\n}\n',
+    harness: 'linked-list',
     tests: [
-      { args: [[3, 2, 0, -4], 1], expected: true, label: 'example: tail loops back to index 1' },
-      { args: [[1, 2], 0], expected: true, label: 'example: tail loops back to head' },
-      { args: [[1], -1], expected: false, label: 'single node, no cycle' },
-      { args: [[], -1], expected: false, label: 'empty list', hidden: true },
-      { args: [[1], 0], expected: true, label: 'single node self-loop', hidden: true },
-      { args: [[1, 2, 3, 4, 5], -1], expected: false, label: 'longer list with no cycle', hidden: true },
+      { args: [{ $list: [3, 2, 0, -4], $pos: 1 }], expected: true, label: 'example: tail loops back to index 1' },
+      { args: [{ $list: [1, 2], $pos: 0 }], expected: true, label: 'example: tail loops back to head' },
+      { args: [{ $list: [1], $pos: -1 }], expected: false, label: 'single node, no cycle' },
+      { args: [{ $list: [], $pos: -1 }], expected: false, label: 'empty list', hidden: true },
+      { args: [{ $list: [1], $pos: 0 }], expected: true, label: 'single node self-loop', hidden: true },
+      { args: [{ $list: [1, 2, 3, 4, 5], $pos: -1 }], expected: false, label: 'longer list with no cycle', hidden: true },
     ],
     referenceSolution:
-      'interface ListNode { val: number; next: ListNode | null }\n\nexport function hasCycle(values: number[], pos: number): boolean {\n  if (values.length === 0) return false\n  const nodes: ListNode[] = values.map((v) => ({ val: v, next: null }))\n  for (let i = 0; i < nodes.length - 1; i++) nodes[i].next = nodes[i + 1]\n  if (pos >= 0) nodes[nodes.length - 1].next = nodes[pos]\n  const head: ListNode = nodes[0]\n\n  let slow: ListNode | null = head\n  let fast: ListNode | null = head\n  while (fast !== null && fast.next !== null) {\n    slow = slow!.next\n    fast = fast.next.next\n    if (slow === fast) return true\n  }\n  return false\n}\n',
+      'interface ListNode { val: number; next: ListNode | null }\n\nexport function hasCycle(head: ListNode | null): boolean {\n  let slow: ListNode | null = head\n  let fast: ListNode | null = head\n  while (fast !== null && fast.next !== null) {\n    slow = slow!.next\n    fast = fast.next.next\n    if (slow === fast) return true\n  }\n  return false\n}\n',
     complexity: { time: 'O(n)', space: 'O(1)' },
   },
 }

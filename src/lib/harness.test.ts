@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildList, buildTree, listToArray, treeToArray, MinHeap } from './harness'
+import { buildCycle, buildList, buildTree, listToArray, treeToArray, MinHeap } from './harness'
 import { canonicalize, resultsEqual } from './compare'
 
 describe('linked-list harness', () => {
@@ -13,6 +13,22 @@ describe('linked-list harness', () => {
     const head = buildList([1, 2])
     expect(head?.val).toBe(1)
     expect(head?.next?.val).toBe(2)
+    expect(head?.next?.next).toBeNull()
+  })
+
+  it('buildCycle wires tail.next to the node at pos', () => {
+    const head = buildCycle([3, 2, 0, -4], 1)
+    expect(head?.val).toBe(3)
+    const two = head?.next
+    const zero = two?.next
+    const neg4 = zero?.next
+    expect(two?.val).toBe(2)
+    expect(neg4?.val).toBe(-4)
+    expect(neg4?.next).toBe(two)
+  })
+
+  it('buildCycle with pos < 0 leaves a linear list', () => {
+    const head = buildCycle([1, 2], -1)
     expect(head?.next?.next).toBeNull()
   })
 })
