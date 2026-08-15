@@ -2,6 +2,13 @@ import { transform } from 'sucrase'
 import equal from 'fast-deep-equal'
 import { harnessSource } from './harness'
 import { canonicalize } from './compare'
+import {
+  invokeEntry,
+  lockdownWorkerGlobals,
+  resolveActual,
+  resolveArg,
+  resolveExpected,
+} from './runHarness'
 import type { HarnessKind, TestCase } from '../data/types'
 
 export interface CaseResult {
@@ -19,13 +26,11 @@ export interface TestRunResult {
   durationMs: number
   passed: number
   total: number
-  /** Set when the code failed to transpile — no cases were run. */
   error?: string
 }
 
 export const RUN_TIMEOUT_MS = 3000
 
-/** Parse the entry function/class name out of a starter signature. */
 export function entryName(signature: string): string {
   const m = signature.match(/(?:function|class)\s+([A-Za-z0-9_$]+)/)
   if (!m) throw new Error(`Cannot find entry name in signature: ${signature}`)
@@ -33,7 +38,6 @@ export function entryName(signature: string): string {
 }
 
 export function stripTypes(code: string): string {
-  // "imports" converts ESM to CJS so `export function` is legal in a classic worker.
   return transform(code, { transforms: ['typescript', 'imports'] }).code
 }
 
@@ -51,7 +55,12 @@ export function buildWorkerSource(opts: {
   const transpiled = stripTypes(opts.userCode)
   return `
 'use strict';
+;(${lockdownWorkerGlobals.toString()})();
 ${harnessSource()}
+const resolveArg = ${resolveArg.toString()};
+const resolveActual = ${resolveActual.toString()};
+const resolveExpected = ${resolveExpected.toString()};
+const invokeEntry = ${invokeEntry.toString()};
 const __equal = ${equal.toString()};
 const __canonical = ${canonicalize.toString()};
 const canonicalize = __canonical;
@@ -72,56 +81,19 @@ const __entryFn =
   typeof ${opts.entry} !== 'undefined'
     ? ${opts.entry}
     : (module.exports && (module.exports.${opts.entry} || module.exports.default));
-const __resolveArg = (v) => {
-  if (v && typeof v === 'object' && '$list' in v) {
-    return typeof v.$pos === 'number' ? buildCycle(v.$list, v.$pos) : buildList(v.$list);
-  }
-  if (v && typeof v === 'object' && '$tree' in v) return buildTree(v.$tree);
-  return v;
-};
-const __resolveActual = (actual, expected) => {
-  if (expected && typeof expected === 'object' && '$list' in expected) return listToArray(actual);
-  if (expected && typeof expected === 'object' && '$tree' in expected) return treeToArray(actual);
-  return actual;
-};
-const __resolveExpected = (expected) => {
-  if (expected && typeof expected === 'object' && '$list' in expected) return expected.$list;
-  if (expected && typeof expected === 'object' && '$tree' in expected) return expected.$tree;
-  return expected;
-};
 const __show = (v) => (v === undefined ? 'undefined' : JSON.stringify(v));
 for (let i = 0; i < __tests.length; i++) {
   const t = __tests[i];
   __logs = [];
-  postMessage({ type: 'start', index: i });
+  self.postMessage({ type: 'start', index: i });
   const t0 = Date.now();
   let status = 'fail';
   let actualShown = '';
-  const expectedResolved = __resolveExpected(t.expected);
+  const expectedResolved = resolveExpected(t.expected);
   try {
-    const args = JSON.parse(JSON.stringify(t.args)).map(__resolveArg);
-    let actual;
-    if (__harness === 'class-design') {
-      if (typeof __entryFn !== 'function') throw new Error('Class ${opts.entry} is not defined');
-      const names = args[0];
-      const argLists = args[1];
-      const outputs = [];
-      let inst = null;
-      for (let j = 0; j < names.length; j++) {
-        if (j === 0) {
-          inst = new __entryFn(...argLists[0]);
-          outputs.push(null);
-        } else {
-          const out = inst[names[j]](...argLists[j]);
-          outputs.push(out === undefined ? null : out);
-        }
-      }
-      actual = outputs;
-    } else {
-      if (typeof __entryFn !== 'function') throw new Error('Function ${opts.entry} is not defined');
-      actual = __entryFn(...args);
-    }
-    actual = __resolveActual(actual, t.expected);
+    const args = JSON.parse(JSON.stringify(t.args)).map((v) => resolveArg(v, buildList, buildCycle, buildTree));
+    let actual = invokeEntry(__entryFn, args, __harness, ${JSON.stringify(opts.entry)});
+    actual = resolveActual(actual, t.expected, listToArray, treeToArray);
     const pass = __orderInsensitive
       ? __equal(__canonical(actual), __canonical(expectedResolved))
       : __equal(actual, expectedResolved);
@@ -131,7 +103,7 @@ for (let i = 0; i < __tests.length; i++) {
     status = 'fail';
     actualShown = String(err);
   }
-  postMessage({
+  self.postMessage({
     type: 'case',
     index: i,
     status,
@@ -141,7 +113,7 @@ for (let i = 0; i < __tests.length; i++) {
     ms: Date.now() - t0,
   });
 }
-postMessage({ type: 'done' });
+self.postMessage({ type: 'done' });
 `
 }
 
@@ -186,7 +158,7 @@ export function runTests(opts: {
   return new Promise((resolve) => {
     const blob = new Blob([source], { type: 'text/javascript' })
     const url = URL.createObjectURL(blob)
-    const worker = new Worker(url)
+    const worker = new Worker(url, { type: 'module' })
     const cases: CaseResult[] = []
     let running = -1
 

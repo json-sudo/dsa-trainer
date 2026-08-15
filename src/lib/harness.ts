@@ -64,11 +64,16 @@ export function buildTree(values: (number | null)[]): TreeNode | null {
 export function treeToArray(root: TreeNode | null): (number | null)[] {
   const out: (number | null)[] = []
   const queue: (TreeNode | null)[] = [root]
-  while (queue.length > 0) {
+  const seen = new WeakSet<object>()
+  let guard = 0
+  while (queue.length > 0 && guard++ < 100000) {
     const node = queue.shift()!
     if (node === null) {
       out.push(null)
+    } else if (seen.has(node)) {
+      out.push(null)
     } else {
+      seen.add(node)
       out.push(node.val)
       queue.push(node.left, node.right)
     }

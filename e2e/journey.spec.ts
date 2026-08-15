@@ -36,7 +36,7 @@ test('full journey: roadmap → guided walkthrough → practice problem → grad
   // Roadmap: 18 topics, Arrays & Hashing unlocked with progress, others locked.
   await expect(page.getByText('DSA Trainer')).toBeVisible()
   await expect(page.getByText('Arrays & Hashing')).toBeVisible()
-  await expect(page.getByText('unlock rule: ≥2 completed problems in every prerequisite')).toBeVisible()
+  await expect(page.getByText('unlock rule: ≥ 2 completed problems in every prerequisite')).toBeVisible()
   await expect(page.getByRole('button', { name: /Arrays & Hashing/ })).toContainText('0/4 done')
 
   // Locked node: not a button, tooltip on hover names the missing prerequisite.

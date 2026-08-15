@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildCycle, buildList, buildTree, listToArray, treeToArray, MinHeap } from './harness'
+import { buildCycle, buildList, buildTree, listToArray, treeToArray, MinHeap, type TreeNode } from './harness'
 import { canonicalize, resultsEqual } from './compare'
 
 describe('linked-list harness', () => {
@@ -54,6 +54,12 @@ describe('tree harness', () => {
     expect(root?.right?.val).toBe(3)
     expect(root?.left?.left).toBeNull()
     expect(root?.left?.right?.val).toBe(4)
+  })
+
+  it('treeToArray terminates when a child pointer forms a cycle', () => {
+    const root: TreeNode = { val: 1, left: null, right: null }
+    root.left = root
+    expect(treeToArray(root).length).toBeLessThan(8)
   })
 })
 

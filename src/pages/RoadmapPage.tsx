@@ -54,7 +54,7 @@ export function RoadmapPage() {
           <span className="size-2.5 rounded-[3px] border border-dashed border-ink/30 bg-sunken" />
           Locked — hover for requirement
         </span>
-        <span className="ml-auto font-mono">unlock rule: ≥2 completed problems in every prerequisite</span>
+        <span className="ml-auto font-mono">unlock rule: ≥ 2 completed problems in every prerequisite</span>
         <button
           type="button"
           onClick={() => setFreeLearn(!settings.freeLearn)}

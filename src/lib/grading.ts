@@ -15,6 +15,16 @@ export const STEP_LABELS = [
   'Grade',
 ] as const
 
+export const STEP_KEYS = {
+  2: 'inputsOutputs',
+  3: 'whatToFind',
+  4: 'constraintsHint',
+  5: 'bruteForce',
+  6: 'wasteAndPattern',
+  7: 'algorithm',
+  8: 'interviewScript',
+} as const
+
 export const STEP_SHORT_LABELS = [
   '1 read',
   '2 i/o',

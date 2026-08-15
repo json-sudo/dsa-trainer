@@ -31,6 +31,7 @@ function renderWizard(problemId: string) {
       <Routes>
         <Route path="/problem/:problemId" element={<WizardPage />} />
         <Route path="/topic/:topicId" element={<div>topic page</div>} />
+        <Route path="/problem/:problemId" element={<div>next problem page</div>} />
         <Route path="/patterns" element={<div>patterns page</div>} />
       </Routes>
     </MemoryRouter>,
@@ -86,5 +87,12 @@ describe('grade screen', () => {
 
     expect(screen.getByText(/REFERENCE SOLUTION/)).toBeInTheDocument()
     expect(screen.getByText(/const seen = new Map/)).toBeInTheDocument()
+
+    const next = screen.getByRole('link', { name: 'Next problem →' })
+    expect(next).toHaveAttribute('href', '/problem/top-k-frequent-elements')
+    expect(screen.getByRole('link', { name: 'Back to topic' })).toHaveAttribute(
+      'href',
+      '/topic/arrays-hashing',
+    )
   })
 })

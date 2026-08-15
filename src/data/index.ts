@@ -1,4 +1,4 @@
-import type { AnyProblem, Problem } from './types'
+import { isAuthored, type AnyProblem, type Problem } from './types'
 import { topics } from './roadmap'
 import { arraysHashingProblems } from './problems/arrays-hashing'
 import { twoPointersProblems } from './problems/two-pointers'
@@ -53,4 +53,17 @@ export function problemsForTopic(topicId: string): AnyProblem[] {
 
 export function authoredProblems(): Problem[] {
   return allProblems.filter((p): p is Problem => p.authored)
+}
+
+export function nextAuthoredProblem(problemId: string): Problem | undefined {
+  const ordered: Problem[] = []
+  for (const topic of topics) {
+    for (const id of topic.problemIds) {
+      const p = problemById[id]
+      if (p && isAuthored(p)) ordered.push(p)
+    }
+  }
+  const i = ordered.findIndex((p) => p.id === problemId)
+  if (i < 0 || i === ordered.length - 1) return undefined
+  return ordered[i + 1]
 }

@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom'
 import type { Problem } from '../data/types'
-import { formatClock, STEP_LABELS } from '../lib/grading'
+import { formatClock, STEP_KEYS, STEP_LABELS } from '../lib/grading'
 import type { Attempt } from '../lib/store'
 import { Markdown } from './Markdown'
-import { STEP_KEYS } from './GradeScreen'
 
 export function GuidedCompleteScreen({
   problem,

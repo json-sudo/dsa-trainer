@@ -1,10 +1,5 @@
-/**
- * Data validation (`npm run validate-data`): every authored problem has all
- * required fields, and every reference solution passes its own test cases in
- * Node. Doubles as the spec's "reference solutions × test cases" test.
- */
 import { describe, expect, it } from 'vitest'
-import { allProblems, authoredProblems } from '../data'
+import { allProblems, authoredProblems, nextAuthoredProblem } from '../data'
 import { topics } from '../data/roadmap'
 import { patternById, patterns } from '../data/patterns'
 // @ts-expect-error plain-JS catalog module
@@ -27,6 +22,13 @@ describe('catalog coverage', () => {
       const rows = catalogRows[topic.id]
       expect(topic.problemIds, topic.id).toEqual(rows.map((r) => r[0]))
     }
+  })
+
+  it('nextAuthoredProblem follows roadmap catalog order', () => {
+    expect(nextAuthoredProblem('two-sum')?.id).toBe('top-k-frequent-elements')
+    expect(nextAuthoredProblem('contains-duplicate')?.id).toBe('group-anagrams')
+    const lastId = topics[topics.length - 1].problemIds[6]
+    expect(nextAuthoredProblem(lastId)).toBeUndefined()
   })
 
   it('v1-flagged problems are authored; unflagged are stubs', () => {

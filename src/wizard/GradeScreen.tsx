@@ -6,22 +6,14 @@ import {
   formatClock,
   GRADE_QUALIFIER,
   softTargetSec,
+  STEP_KEYS,
   STEP_LABELS,
   type SelfScore,
 } from '../lib/grading'
+import { nextAuthoredProblem } from '../data'
 import type { Attempt } from '../lib/store'
 import { Markdown } from './Markdown'
 import { GuidedCompleteScreen } from './GuidedCompleteScreen'
-
-export const STEP_KEYS = {
-  2: 'inputsOutputs',
-  3: 'whatToFind',
-  4: 'constraintsHint',
-  5: 'bruteForce',
-  6: 'wasteAndPattern',
-  7: 'algorithm',
-  8: 'interviewScript',
-} as const
 
 export function GradeScreen({
   problem,
@@ -62,6 +54,7 @@ export function GradeScreen({
 
   const target = softTargetSec(problem.difficulty)
   const underTarget = attempt.totalSec <= target
+  const nextProblem = nextAuthoredProblem(problem.id)
 
   const weakest = breakdown ? breakdown.weakestStep : undefined
   const weakestTip =
@@ -213,12 +206,14 @@ export function GradeScreen({
             </div>
           </div>
           <div className="flex gap-3">
-            <Link
-              to={`/topic/${problem.topicId}`}
-              className="inline-flex h-[38px] items-center rounded-[9px] bg-ink px-5 text-[13.5px] font-semibold text-bg no-underline hover:opacity-90"
-            >
-              Next problem →
-            </Link>
+            {nextProblem && (
+              <Link
+                to={`/problem/${nextProblem.id}`}
+                className="inline-flex h-[38px] items-center rounded-[9px] bg-ink px-5 text-[13.5px] font-semibold text-bg no-underline hover:opacity-90"
+              >
+                Next problem →
+              </Link>
+            )}
             <Link
               to={`/topic/${problem.topicId}`}
               className="ghost-btn inline-flex h-[38px] items-center no-underline"
