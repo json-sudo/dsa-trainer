@@ -5,6 +5,7 @@ import { kthLargestElementInAStream } from './kth-largest-element-in-a-stream'
 import { lastStoneWeight } from './last-stone-weight'
 import { kClosestPointsToOrigin } from './k-closest-points-to-origin'
 import { taskScheduler } from './task-scheduler'
+import { mergeKSortedLists } from './merge-k-sorted-lists'
 
 export const heapProblems: AnyProblem[] = [
   kthLargestElementInAnArray,
@@ -13,14 +14,5 @@ export const heapProblems: AnyProblem[] = [
   lastStoneWeight,
   kClosestPointsToOrigin,
   taskScheduler,
-  {
-    id: 'merge-k-sorted-lists',
-    leetcodeId: 23,
-    title: "Merge k Sorted Lists",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'heap',
-    authored: false,
-    acceptedPatterns: ['heap'],
-  },
+  mergeKSortedLists,
 ]

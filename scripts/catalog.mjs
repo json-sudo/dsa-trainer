@@ -18,7 +18,7 @@ export const catalog = {
     ['remove-duplicates-from-sorted-array', 26, 'Remove Duplicates from Sorted Array', 'easy', 'practice', ['two-pointers'], true],
     ['container-with-most-water', 11, 'Container With Most Water', 'medium', 'practice', ['two-pointers'], true],
     ['move-zeroes', 283, 'Move Zeroes', 'easy', 'practice', ['two-pointers'], true],
-    ['trapping-rain-water', 42, 'Trapping Rain Water', 'hard', 'practice', ['two-pointers', 'prefix'], false],
+    ['trapping-rain-water', 42, 'Trapping Rain Water', 'hard', 'practice', ['two-pointers', 'prefix'], true],
   ],
   'sliding-window': [
     ['best-time-to-buy-and-sell-stock', 121, 'Best Time to Buy and Sell Stock', 'easy', 'guided', ['one-pass', 'sliding-window'], true],
@@ -26,8 +26,8 @@ export const catalog = {
     ['longest-repeating-character-replacement', 424, 'Longest Repeating Character Replacement', 'medium', 'practice', ['sliding-window'], true],
     ['permutation-in-string', 567, 'Permutation in String', 'medium', 'practice', ['sliding-window', 'freq-map'], true],
     ['minimum-size-subarray-sum', 209, 'Minimum Size Subarray Sum', 'medium', 'practice', ['sliding-window'], true],
-    ['minimum-window-substring', 76, 'Minimum Window Substring', 'hard', 'practice', ['sliding-window'], false],
-    ['sliding-window-maximum', 239, 'Sliding Window Maximum', 'hard', 'practice', ['monotonic-stack', 'sliding-window'], false],
+    ['minimum-window-substring', 76, 'Minimum Window Substring', 'hard', 'practice', ['sliding-window'], true],
+    ['sliding-window-maximum', 239, 'Sliding Window Maximum', 'hard', 'practice', ['monotonic-stack', 'sliding-window'], true],
   ],
   stack: [
     ['valid-parentheses', 20, 'Valid Parentheses', 'easy', 'guided', ['stack'], true],
@@ -36,7 +36,7 @@ export const catalog = {
     ['evaluate-reverse-polish-notation', 150, 'Evaluate Reverse Polish Notation', 'medium', 'practice', ['stack'], true],
     ['generate-parentheses', 22, 'Generate Parentheses', 'medium', 'practice', ['backtracking', 'stack'], true],
     ['car-fleet', 853, 'Car Fleet', 'medium', 'practice', ['monotonic-stack', 'sort-sweep'], true],
-    ['largest-rectangle-in-histogram', 84, 'Largest Rectangle in Histogram', 'hard', 'practice', ['monotonic-stack'], false],
+    ['largest-rectangle-in-histogram', 84, 'Largest Rectangle in Histogram', 'hard', 'practice', ['monotonic-stack'], true],
   ],
   'binary-search': [
     ['binary-search', 704, 'Binary Search', 'easy', 'guided', ['binary-search'], true],
@@ -72,7 +72,7 @@ export const catalog = {
     ['replace-words', 648, 'Replace Words', 'medium', 'practice', ['trie'], true],
     ['map-sum-pairs', 677, 'Map Sum Pairs', 'medium', 'practice', ['trie', 'hash-map'], true],
     ['search-suggestions-system', 1268, 'Search Suggestions System', 'medium', 'practice', ['trie', 'two-pointers'], true],
-    ['word-search-ii', 212, 'Word Search II', 'hard', 'practice', ['trie', 'backtracking'], false],
+    ['word-search-ii', 212, 'Word Search II', 'hard', 'practice', ['trie', 'backtracking'], true],
   ],
   heap: [
     ['kth-largest-element-in-an-array', 215, 'Kth Largest Element in an Array', 'medium', 'guided', ['heap'], true],
@@ -81,7 +81,7 @@ export const catalog = {
     ['last-stone-weight', 1046, 'Last Stone Weight', 'easy', 'practice', ['heap'], true],
     ['k-closest-points-to-origin', 973, 'K Closest Points to Origin', 'medium', 'practice', ['heap'], true],
     ['task-scheduler', 621, 'Task Scheduler', 'medium', 'practice', ['heap', 'greedy'], true],
-    ['merge-k-sorted-lists', 23, 'Merge k Sorted Lists', 'hard', 'practice', ['heap'], false],
+    ['merge-k-sorted-lists', 23, 'Merge k Sorted Lists', 'hard', 'practice', ['heap'], true],
   ],
   backtracking: [
     ['subsets', 78, 'Subsets', 'medium', 'guided', ['backtracking'], true],
@@ -105,8 +105,8 @@ export const catalog = {
     ['network-delay-time', 743, 'Network Delay Time', 'medium', 'guided', ['heap', 'bfs'], true],
     ['min-cost-to-connect-all-points', 1584, 'Min Cost to Connect All Points', 'medium', 'guided', ['heap', 'greedy'], true],
     ['cheapest-flights-within-k-stops', 787, 'Cheapest Flights Within K Stops', 'medium', 'practice', ['bfs', 'heap', 'dp'], true],
-    ['reconstruct-itinerary', 332, 'Reconstruct Itinerary', 'hard', 'practice', ['dfs'], false],
-    ['swim-in-rising-water', 778, 'Swim in Rising Water', 'hard', 'practice', ['heap', 'binary-search'], false],
+    ['reconstruct-itinerary', 332, 'Reconstruct Itinerary', 'hard', 'practice', ['dfs'], true],
+    ['swim-in-rising-water', 778, 'Swim in Rising Water', 'hard', 'practice', ['heap', 'binary-search'], true],
     ['alien-dictionary', 269, 'Alien Dictionary', 'hard', 'practice', ['bfs'], true],
     ['word-ladder', 127, 'Word Ladder', 'hard', 'practice', ['bfs'], true],
   ],
@@ -126,7 +126,7 @@ export const catalog = {
     ['coin-change-ii', 518, 'Coin Change II', 'medium', 'practice', ['dp'], true],
     ['interleaving-string', 97, 'Interleaving String', 'medium', 'practice', ['dp'], true],
     ['edit-distance', 72, 'Edit Distance', 'medium', 'practice', ['dp'], true],
-    ['longest-increasing-path-in-a-matrix', 329, 'Longest Increasing Path in a Matrix', 'hard', 'practice', ['dfs', 'dp'], false],
+    ['longest-increasing-path-in-a-matrix', 329, 'Longest Increasing Path in a Matrix', 'hard', 'practice', ['dfs', 'dp'], true],
   ],
   greedy: [
     ['jump-game', 55, 'Jump Game', 'medium', 'guided', ['greedy', 'one-pass'], true],
@@ -144,7 +144,7 @@ export const catalog = {
     ['insert-interval', 57, 'Insert Interval', 'medium', 'practice', ['sort-sweep'], true],
     ['non-overlapping-intervals', 435, 'Non-overlapping Intervals', 'medium', 'practice', ['sort-sweep', 'greedy'], true],
     ['interval-list-intersections', 986, 'Interval List Intersections', 'medium', 'practice', ['two-pointers'], true],
-    ['minimum-interval-to-include-each-query', 1851, 'Minimum Interval to Include Each Query', 'hard', 'practice', ['heap', 'sort-sweep'], false],
+    ['minimum-interval-to-include-each-query', 1851, 'Minimum Interval to Include Each Query', 'hard', 'practice', ['heap', 'sort-sweep'], true],
   ],
   'math-geometry': [
     ['rotate-image', 48, 'Rotate Image', 'medium', 'guided', ['math'], true],

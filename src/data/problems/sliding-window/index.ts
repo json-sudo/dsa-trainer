@@ -4,6 +4,8 @@ import { longestSubstringWithoutRepeatingCharacters } from './longest-substring-
 import { longestRepeatingCharacterReplacement } from './longest-repeating-character-replacement'
 import { permutationInString } from './permutation-in-string'
 import { minimumSizeSubarraySum } from './minimum-size-subarray-sum'
+import { minimumWindowSubstring } from './minimum-window-substring'
+import { slidingWindowMaximum } from './sliding-window-maximum'
 
 export const slidingWindowProblems: AnyProblem[] = [
   bestTimeToBuyAndSellStock,
@@ -11,24 +13,6 @@ export const slidingWindowProblems: AnyProblem[] = [
   longestRepeatingCharacterReplacement,
   permutationInString,
   minimumSizeSubarraySum,
-  {
-    id: 'minimum-window-substring',
-    leetcodeId: 76,
-    title: "Minimum Window Substring",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'sliding-window',
-    authored: false,
-    acceptedPatterns: ['sliding-window'],
-  },
-  {
-    id: 'sliding-window-maximum',
-    leetcodeId: 239,
-    title: "Sliding Window Maximum",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'sliding-window',
-    authored: false,
-    acceptedPatterns: ['monotonic-stack','sliding-window'],
-  },
+  minimumWindowSubstring,
+  slidingWindowMaximum,
 ]

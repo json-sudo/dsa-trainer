@@ -5,6 +5,7 @@ import { minStack } from './min-stack'
 import { evaluateReversePolishNotation } from './evaluate-reverse-polish-notation'
 import { generateParentheses } from './generate-parentheses'
 import { carFleet } from './car-fleet'
+import { largestRectangleInHistogram } from './largest-rectangle-in-histogram'
 
 export const stackProblems: AnyProblem[] = [
   validParentheses,
@@ -13,14 +14,5 @@ export const stackProblems: AnyProblem[] = [
   evaluateReversePolishNotation,
   generateParentheses,
   carFleet,
-  {
-    id: 'largest-rectangle-in-histogram',
-    leetcodeId: 84,
-    title: "Largest Rectangle in Histogram",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'stack',
-    authored: false,
-    acceptedPatterns: ['monotonic-stack'],
-  },
+  largestRectangleInHistogram,
 ]

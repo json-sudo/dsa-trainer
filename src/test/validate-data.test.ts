@@ -16,9 +16,9 @@ type CatalogRow = [string, number, string, string, string, string[], boolean]
 const catalogRows: Record<string, CatalogRow[]> = catalog
 
 describe('catalog coverage', () => {
-  it('has all 126 problems registered (116 authored, 10 stubs)', () => {
+  it('has all 126 problems registered, all authored', () => {
     expect(allProblems).toHaveLength(126)
-    expect(authoredProblems()).toHaveLength(116)
+    expect(authoredProblems()).toHaveLength(126)
   })
 
   it('every topic lists 7 problems in catalog order (2 guided then 5 practice)', () => {

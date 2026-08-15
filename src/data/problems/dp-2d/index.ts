@@ -5,6 +5,7 @@ import { targetSum } from './target-sum'
 import { coinChangeII } from './coin-change-ii'
 import { interleavingString } from './interleaving-string'
 import { editDistance } from './edit-distance'
+import { longestIncreasingPathInAMatrix } from './longest-increasing-path-in-a-matrix'
 
 export const dp2dProblems: AnyProblem[] = [
   uniquePaths,
@@ -13,14 +14,5 @@ export const dp2dProblems: AnyProblem[] = [
   coinChangeII,
   interleavingString,
   editDistance,
-  {
-    id: 'longest-increasing-path-in-a-matrix',
-    leetcodeId: 329,
-    title: "Longest Increasing Path in a Matrix",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'dp-2d',
-    authored: false,
-    acceptedPatterns: ['dfs','dp'],
-  },
+  longestIncreasingPathInAMatrix,
 ]

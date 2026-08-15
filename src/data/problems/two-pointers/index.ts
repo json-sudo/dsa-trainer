@@ -5,6 +5,7 @@ import { twoSumII } from './two-sum-ii'
 import { removeDuplicatesFromSortedArray } from './remove-duplicates-from-sorted-array'
 import { containerWithMostWater } from './container-with-most-water'
 import { moveZeroes } from './move-zeroes'
+import { trappingRainWater } from './trapping-rain-water'
 
 export const twoPointersProblems: AnyProblem[] = [
   validPalindrome,
@@ -13,14 +14,5 @@ export const twoPointersProblems: AnyProblem[] = [
   removeDuplicatesFromSortedArray,
   containerWithMostWater,
   moveZeroes,
-  {
-    id: 'trapping-rain-water',
-    leetcodeId: 42,
-    title: "Trapping Rain Water",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'two-pointers',
-    authored: false,
-    acceptedPatterns: ['two-pointers','prefix'],
-  },
+  trappingRainWater,
 ]

@@ -5,6 +5,7 @@ import { meetingRooms } from './meeting-rooms'
 import { insertInterval } from './insert-interval'
 import { nonOverlappingIntervals } from './non-overlapping-intervals'
 import { intervalListIntersections } from './interval-list-intersections'
+import { minimumIntervalToIncludeEachQuery } from './minimum-interval-to-include-each-query'
 
 export const intervalsProblems: AnyProblem[] = [
   mergeIntervals,
@@ -13,14 +14,5 @@ export const intervalsProblems: AnyProblem[] = [
   insertInterval,
   nonOverlappingIntervals,
   intervalListIntersections,
-  {
-    id: 'minimum-interval-to-include-each-query',
-    leetcodeId: 1851,
-    title: "Minimum Interval to Include Each Query",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'intervals',
-    authored: false,
-    acceptedPatterns: ['heap','sort-sweep'],
-  },
+  minimumIntervalToIncludeEachQuery,
 ]

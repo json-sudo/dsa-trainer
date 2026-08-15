@@ -5,6 +5,7 @@ import { longestCommonPrefix } from './longest-common-prefix'
 import { replaceWords } from './replace-words'
 import { mapSumPairs } from './map-sum-pairs'
 import { searchSuggestionsSystem } from './search-suggestions-system'
+import { wordSearchIi } from './word-search-ii'
 
 export const triesProblems: AnyProblem[] = [
   implementTrie,
@@ -13,14 +14,5 @@ export const triesProblems: AnyProblem[] = [
   replaceWords,
   mapSumPairs,
   searchSuggestionsSystem,
-  {
-    id: 'word-search-ii',
-    leetcodeId: 212,
-    title: "Word Search II",
-    difficulty: 'hard',
-    mode: 'practice',
-    topicId: 'tries',
-    authored: false,
-    acceptedPatterns: ['trie','backtracking'],
-  },
+  wordSearchIi,
 ]
