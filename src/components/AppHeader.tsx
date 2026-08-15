@@ -14,7 +14,7 @@ export function AppHeader({ subtitle }: { subtitle?: string }) {
   const avg = averageScore(state)
 
   return (
-    <header className="flex h-[52px] flex-none items-center gap-6 border-b border-line bg-surface px-7">
+    <header className="flex h-13 flex-none items-center gap-6 border-b border-line bg-surface px-7">
       <Link to="/" className="flex items-center gap-2.5 text-ink no-underline">
         <div className="grid size-[22px] place-items-center rounded-[6px] bg-ink font-mono text-[11px] font-semibold text-bg">
           D

@@ -25,7 +25,7 @@ npm run lint           # oxlint
 ## Layout
 
 - `src/data/` — all content: roadmap DAG, 21 pattern primers + code templates,
-  126 problems (72 fully authored, 54 stubs) under `problems/<topic>/`.
+  126 problems (116 fully authored, 10 stubs) under `problems/<topic>/`.
 - `src/lib/` — engine: list/tree harness, worker executor, grading weights,
   localStorage persistence, topic locking.
 - `src/wizard/` — the 10-step wizard (step rail, step body, Monaco code step,
@@ -35,6 +35,6 @@ npm run lint           # oxlint
   cross-checks every problem file against it.
 
 Progress lives in `localStorage` under `dsa-trainer/v1` (export/import JSON on
-the Progress page). To author one of the 54 remaining stubs, add a problem file
+the Progress page). To author one of the 10 remaining stubs, add a problem file
 under its topic directory and run `node scripts/gen-topic-index.mjs <topic>` —
 `npm run validate-data` picks it up automatically.

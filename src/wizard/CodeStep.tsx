@@ -104,7 +104,7 @@ export function CodeStep({
             </div>
           ))}
           <div className="kicker mb-2 text-faint">STARTER SIGNATURE</div>
-          <div className="mb-4 whitespace-prewrap rounded-[8px] border border-ink/8 bg-bg px-3.5 py-3 font-mono text-xs leading-[1.7] text-ink-2">
+          <div className="mb-4 whitespace-pre-wrap rounded-[8px] border border-ink/8 bg-bg px-3.5 py-3 font-mono text-xs leading-[1.7] text-ink-2">
             {problem.code.signature.split('\n')[0]}
           </div>
           {attempt.answers[7] && (

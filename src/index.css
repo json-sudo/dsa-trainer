@@ -66,6 +66,7 @@
   --radius-md: 7px;
   --radius-lg: 10px;
   --radius-xl: 12px;
+  --spacing-13: 3.25rem;
 }
 
 body {

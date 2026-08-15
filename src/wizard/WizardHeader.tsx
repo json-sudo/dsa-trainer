@@ -13,7 +13,7 @@ export function WizardHeader({ problem, attempt, viewStep }: { problem: Problem;
   const settings = useSettings()
 
   return (
-    <header className="flex h-[52px] flex-none items-center gap-4 border-b border-line bg-surface px-5">
+    <header className="flex h-13 flex-none items-center gap-4 border-b border-line bg-surface px-5">
       <Link
         to={`/topic/${problem.topicId}`}
         className="flex items-center gap-1.5 rounded-[6px] px-2.5 py-1.5 text-[13px] font-medium text-ink-3 no-underline hover:bg-ink/6 hover:text-ink"
