@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { HashRouter, MemoryRouter, Route, Routes } from 'react-router-dom'
 import { PatternsPage } from '../pages/PatternsPage'
 import { patterns } from '../data/patterns'
 
@@ -40,5 +40,23 @@ describe('patterns reference page', () => {
     await user.click(screen.getByRole('button', { name: target.name }))
     expect(scrollIntoView).toHaveBeenCalled()
     expect(document.getElementById(`p-${target.id}`)).not.toBeNull()
+  })
+
+  it('does not treat a jump click as a HashRouter navigation', async () => {
+    const user = userEvent.setup()
+    window.history.pushState({}, '', '/#/patterns')
+    render(
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<div>roadmap</div>} />
+          <Route path="/patterns" element={<PatternsPage />} />
+        </Routes>
+      </HashRouter>,
+    )
+    expect(screen.getByText('JUMP TO')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: patterns[0].name }))
+    expect(window.location.hash).toMatch(/patterns/)
+    expect(screen.queryByText('roadmap')).not.toBeInTheDocument()
+    expect(screen.getByText('JUMP TO')).toBeInTheDocument()
   })
 })
